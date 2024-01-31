@@ -26,15 +26,22 @@ class TestBooksCollector:
     # напиши свои тесты ниже
     # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
 
-    def test_add_new_book_over_40_symbols(self):
+    # Объединил два теста в один через параметризацию
+    @pytest.mark.parametrize('book', ['Удивительное путешествие Нильса Хольгерссона с дикими гусями по Швеции', ''])
+    def test_add_new_book_over_40_symbols_or_0_symbols(self, book):
         collector = BooksCollector()
-        collector.add_new_book('Удивительное путешествие Нильса Хольгерссона с дикими гусями по Швеции')
+        collector.add_new_book(book)
         assert collector.get_books_genre() == {}
 
-    def test_add_new_book_0_symbols(self):
-        collector = BooksCollector()
-        collector.add_new_book('')
-        assert collector.get_books_genre() == {}
+    # def test_add_new_book_over_40_symbols(self):
+    #     collector = BooksCollector()
+    #     collector.add_new_book('Удивительное путешествие Нильса Хольгерссона с дикими гусями по Швеции')
+    #     assert collector.get_books_genre() == {}
+    #
+    # def test_add_new_book_0_symbols(self):
+    #     collector = BooksCollector()
+    #     collector.add_new_book('')
+    #     assert collector.get_books_genre() == {}
 
     def test_add_new_book_same_title(self):
         collector = BooksCollector()
@@ -42,15 +49,19 @@ class TestBooksCollector:
         collector.add_new_book('Гордость и предубеждение и зомби')
         assert len(collector.get_books_genre()) == 1
 
-    def test_set_book_genre(self, collector):
-        assert collector.books_genre['Гордость и предубеждение и зомби'] == 'Ужасы'
-
-    @pytest.mark.parametrize('false_genre', ['Сказки', 'Биография'])
-    def test_set_book_genre_false_genre(self, false_genre):
+    # Убрал использование фикстуры
+    def test_set_book_genre(self):
         collector = BooksCollector()
         collector.add_new_book('Гордость и предубеждение и зомби')
-        collector.set_book_genre('Гордость и предубеждение и зомби', false_genre)
-        assert false_genre not in collector.get_book_genre('Гордость и предубеждение и зомби')
+        collector.set_book_genre('Гордость и предубеждение и зомби', 'Ужасы')
+        assert collector.books_genre['Гордость и предубеждение и зомби'] == 'Ужасы'
+
+    # Убрал параметризацию. На самом деле я ее добавил сюда, потому что не знал куда еще можно было бы впихнуть
+    def test_set_book_genre_false_genre(self):
+        collector = BooksCollector()
+        collector.add_new_book('Гордость и предубеждение и зомби')
+        collector.set_book_genre('Гордость и предубеждение и зомби', 'Сказки')
+        assert 'Сказки' not in collector.get_book_genre('Гордость и предубеждение и зомби')
 
     def test_get_books_genre(self, collector):
         assert collector.get_book_genre('Гордость и предубеждение и зомби') == 'Ужасы'
